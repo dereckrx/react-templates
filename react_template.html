@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<head>
+  <title>ReactRx Title</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="main.css"> -->
+</head>
+<body id="home">
+
+  <header>
+    <nav class="navbar navbar-default navbar-static-top">
+      <a id="logo" class='navbar-brand' href="/">ReactAppRx</a>
+      <div class="container">
+        <ul class='nav navbar-nav navbar-right'>
+          <li><a href='/'>Home</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <section class="container">
+
+    <div id="app"></div>
+
+  </section>
+
+  <!-- JS -->
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+  <!-- React Libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react-dom.js"></script>
+  <!-- Load our components js file -->
+  <script type="text/javascript" src="simply_react.js"></script>
+  <script>
+
+
+const {creatorFor, div, p, h1, h2, h3, h4, a, ul, li} = SimplyReact;
+
+const Comment = (props) => {
+  return (
+    div({ className: "comment" },
+      p({ className: "comment-header" }, props.author ),
+      p({ className: "comment-body" }, props.body),
+      div({ className: "comment-footer" },
+        a({
+            href: "#",
+            className: "comment-footer-delete",
+          },
+          "Delete Comment")
+      )
+    )
+  );
+}
+const comment = creatorFor(Comment);
+
+
+const CommentBox = (props) => {
+  return (
+    div({ className: "comment-box" },
+      h3({}, "Comments Rx"),
+      h4({className: "comment-count"}, "2 comments"),
+      div({className: "comment-list"},
+        comment({ author: "dereckrx", body: "Hello world"}),
+        comment({ author: "Amanda", body: "Love for all"})
+      )
+    )
+  );
+};
+const commentBox = creatorFor(CommentBox);
+
+
+const StoryBox = (props) => {
+  return (
+    div({},
+      commentBox({})
+    )
+  )
+};
+const storyBox = creatorFor(StoryBox);
+
+
+const ContactsBox = (props) => {
+  return (
+    div({},
+      h1({}, "Contacts"),
+      ul({},
+        li({},
+          h2({}, "James Nelson"),
+          a({href: 'mailto:james@jamesknelson.com'}, 'james@jamesknelson.com')
+        ),
+        li({},
+          h2({}, "Joe Citizen"),
+          a({href: 'mailto:joe@example.com'}, 'joe@example.com')
+        )
+      )
+    )
+  )
+};
+const contactsBox = creatorFor(ContactsBox);
+
+const rootElement =
+  div({},
+    storyBox({}),
+    contactsBox({})
+  );
+
+ReactDOM.render(rootElement, document.getElementById('app'));
+
+  </script>
+</body>
+</html>
