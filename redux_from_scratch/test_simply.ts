@@ -62,7 +62,6 @@ const async = (fn, description) => {
 
 // Test asynchronous tests
 // fn: (m) => {...test...}
-declare var Promise: any;
 const itAsync = (description, fn) => {
   return () => {
     async((done) => {

@@ -1,7 +1,6 @@
 // Run with
 // $ node *.spec.js
 // node  --experimental-modules store.spec.js
-console.log("here")
 import {Store} from './store.js';
 import {it, async, itAsync, equal} from './test_simply';
 try {
@@ -16,7 +15,7 @@ const setup = () => {
         return state;
     }
   };
-  const store = Store(reducer);
+  const store = Store({reducer});
   return {
     store,
   }
@@ -46,6 +45,7 @@ it('creates a thunk', (m) => {
       handler('called')
     },
     (response) => {wasCalled = response},
+    0
   );
 
   thunk();
