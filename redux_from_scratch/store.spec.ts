@@ -1,7 +1,5 @@
 // Run with
-// $ node *.spec.js
-// node  --experimental-modules store.spec.js
-import {Store} from './store.js';
+import {Store} from './store';
 import {it, async, itAsync, equal} from './test_simply';
 try {
 const expectEqual = equal;

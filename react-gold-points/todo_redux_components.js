@@ -28,7 +28,7 @@ function reduceTodos(state = [], action) {
         id: state.length + 1,
         text: action.text,
         completed: false
-      }
+      };
       // copy state using assign: (newObject, currState, mergeChange)
       // Object.assign({}, state, { visibilityFilter: action.filter})
       // alt array copy syntax: [...state, newTodo]
@@ -71,16 +71,16 @@ function reduceVisibilityFilter(state = SHOW_ALL, action) {
 // }
 
 function Store(reducer, initialState={}) {
-  this.state = initialState
-  this.reducer = reducer
-  this.subscribers = []
+  this.state = initialState;
+  this.reducer = reducer;
+  this.subscribers = [];
   this.getState = function() { return this.state }.bind(this)
   this.subscribe = function(callback) {
-    console.log(this)
+    console.log(this);
     this.subscribers = this.subscribers.concat([callback])
-  }
+  };
   this.dispatch = function(action) {
-    this.state = reducer(this.state, action)
+    this.state = reducer(this.state, action);
     this.subscribers.forEach( (sub) => sub() )
   }
 }
@@ -108,15 +108,15 @@ const TEST_INITIAL_STATE = {
 let store = new Store(todoApp, TEST_INITIAL_STATE)
 
 // Log initial state
-console.log(store.getState())
+console.log(store.getState());
 // Log any time the state changes
 let unsubscribe = store.subscribe(() =>
   console.log(store.getState())
-)
+);
 // Dispatch some actions
-store.dispatch(addTodo('Learn about actions'))
-store.dispatch(addTodo('Learn about reducers'))
-store.dispatch(addTodo('Learn about store'))
+store.dispatch(addTodo('Learn about actions'));
+store.dispatch(addTodo('Learn about reducers'));
+store.dispatch(addTodo('Learn about store'));
 //....
 
 // Stop listening to unsubscribe
