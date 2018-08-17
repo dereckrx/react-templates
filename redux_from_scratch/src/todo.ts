@@ -1,6 +1,7 @@
-import { SimplyReact } from '../simply_react'
+import * as React from 'react';
+import { SimplyReact } from '../../simply_react';
 
-const {div, ul, li, button, input} = SimplyReact;
+const {div, ul, li, button, input} = SimplyReact(React.createElement);
 
 const Todo = (props) => {
 

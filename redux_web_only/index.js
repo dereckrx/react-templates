@@ -3,7 +3,7 @@ import {reducer} from './reducers.js';
 import {SimplyReact} from '../simply_react.js';
 import {App} from './app.js';
 
-const {create} = SimplyReact;
+const {create} = SimplyReact(React.createElement);
 
 const store = Store({
   reducer: reducer,

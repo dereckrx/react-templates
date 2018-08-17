@@ -1,3 +1,12 @@
+import {Todo} from "./todo";
+
+export interface State {
+  todos: Array<any>;
+  num: number;
+  data: string;
+  users: Array<any> | null;
+}
+
 const Store = function(props) {
 
   const reducer = props.reducer;
@@ -6,6 +15,7 @@ const Store = function(props) {
   const listeners = [];
 
   const dispatch = (action) => {
+    console.log('--> Dispatching: ' + action);
     state = reducer(action, state);
     listeners.forEach(listener => listener(state))
   };

@@ -4,7 +4,6 @@ const initalState = {
   todos: [],
   data: "",
   users:null
-
 };
 
 function reducer(action, state = initalState ) {

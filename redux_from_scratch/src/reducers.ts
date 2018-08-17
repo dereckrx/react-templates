@@ -1,13 +1,13 @@
+import {State} from "./store";
 
-const initalState = {
+const initalState: State = {
   num: 0,
   todos: [],
   data: "",
   users:null
-
 };
 
-function reducer(action, state = initalState ) {
+function reducer(action, state: State = initalState ) {
   switch (action.type) {
     case "INC":
       return {

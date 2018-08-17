@@ -1,0 +1,12 @@
+
+{
+  "compilerOptions": {
+    "target": "es5",            // Compatible with older browsers
+    "module": "umd",            // Compatible with both Node.js and browser
+    "moduleResolution": "node", // Tell tsc to look in node_modules for modules
+    "sourceMap": true,          // Creates *.js.map files
+    "jsx": "react",             // Causes inline XML (JSX code) to be expanded
+    "strict": true,             // Strict types, eg. prohibits `var x=0; x=null`
+    "alwaysStrict": true        // Enable JavaScript's "use strict" mode
+  },
+}

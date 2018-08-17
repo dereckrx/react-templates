@@ -1,5 +1,5 @@
 // require "./simply_react"
-const {creatorFor, div, ul, li, h1} = SimplyReact;
+const {creatorFor, div, ul, li, h1} = SimplyReact(React.createElement);
 
 // ## Contaner Component
 class TodoApp extends React.Component {
