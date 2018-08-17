@@ -1,4 +1,5 @@
-// require "./simply_react"
+import {SimplyReact} from  "../../simply_react.js"
+
 const {creatorFor, div, ul, li, h1} = SimplyReact(React.createElement);
 
 // ## Contaner Component
@@ -118,8 +119,4 @@ const Title = ({todoCount}) => {
 }
 const title = creatorFor(Title);
 
-
-ReactDOM.render(
-  todoApp({}),
-  document.getElementById('container')
-);
+export {TodoApp}

@@ -32,17 +32,7 @@ const equal = (obj1, obj2, testName='') => {
 };
 
 const it = (description, fn) => {
-  // Create timer to ensure test is actually called
-  const timer = setTimeout(
-    () => console.error(`ERROR: "${description}" was not called`),
-    200
-  );
-  return (
-    () => {
-      fn(description);
-      clearTimeout(timer)
-    }
-  );
+  fn(description);
 };
 
 // --- ASYNC TEST ----------------------------------------------

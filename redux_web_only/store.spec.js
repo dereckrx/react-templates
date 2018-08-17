@@ -24,7 +24,7 @@ it('adds a listener', (m) => {
   const {store} = setup();
   store.subscribe(() => null);
   expectEqual(store.listeners.length, 1, m);
-})();
+});
 
 it('dispatches to listeners', (m) => {
   const {store} = setup();
@@ -32,7 +32,7 @@ it('dispatches to listeners', (m) => {
   store.subscribe((state) => { wasCalled = state.wasCalled });
   store.dispatch({type: 'test_action'});
   expectEqual(wasCalled, 'called with true', m)
-})();
+});
 
 it('creates a thunk', (m) => {
   const {store} = setup();
@@ -49,7 +49,7 @@ it('creates a thunk', (m) => {
 
   thunk();
   expectEqual(wasCalled, 'called', m)
-})();
+});
 
 it('creates a thunk with delay', (m) => {
   async((done) => {
@@ -68,7 +68,7 @@ it('creates a thunk with delay', (m) => {
       done();
     });
   }, m);
-})();
+});
 
 itAsync('creates a thunk with async test delay', (m) => {
   const {store} = setup();
