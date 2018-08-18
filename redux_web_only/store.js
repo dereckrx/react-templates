@@ -1,4 +1,4 @@
-const Store = function(props) {
+const Store = (props) => {
 
   const reducer = props.reducer;
   let state = props.state;

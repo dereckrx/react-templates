@@ -11,10 +11,12 @@
 // For sync tests
 
 // define a default timeout
-const test = {
+const testData = {
   exitCode: 0,
   timeout: 1000,
 };
+
+let testName = 'NOT SET';
 
 const assert = (condition, message) => {
   try {
@@ -22,16 +24,28 @@ const assert = (condition, message) => {
     const output = condition ? `. ${message}` : `x ${message}`;
     console.log(output);
   } catch(error) {
-    test.exitCode = 1;
+    testData.exitCode = 1;
     console.error('ERROR:', error.message);
   }
 };
 
-const equal = (obj1, obj2, testName='') => {
+const expectEqual = (obj1, obj2) => {
   assert(obj1 === obj2, `"${testName}": expected '${obj1}' to equal '${obj2}'`);
 };
 
+const test = (description, fn) => {
+  return (() => {
+    console.log(`Testing: ${description}`);
+    fn();
+  })
+};
+
+const describe = (description, fn) => {
+  fn(description)
+};
+
 const it = (description, fn) => {
+  testName = description;
   fn(description);
 };
 
@@ -53,6 +67,7 @@ const async = (fn, description) => {
 // Test asynchronous tests
 // fn: (m) => {...test...}
 const itAsync = (description, fn) => {
+  testName = description;
   return () => {
     async((done) => {
         new Promise((res, _) => res(fn(description)))
@@ -63,5 +78,4 @@ const itAsync = (description, fn) => {
   }
 };
 
-export default test;
-export {assert, it, async, itAsync, equal};
+export {assert, test, it, describe, async, itAsync, expectEqual};
