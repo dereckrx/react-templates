@@ -1,6 +1,4 @@
-const x = (name, props, ...children) => {
-  return React.createElement(name, props, ...children);
-};
+const x = React.createElement;
 
 const ContactsBox = (props) => {
   return(

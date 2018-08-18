@@ -1,71 +1,25 @@
-import api_client from './apiClient.js';
+// import * as React from 'react';
+import {SimplyReact} from '../../simply_react.js';
+import Comment from './Comment.js';
+import CommentForm from './CommentForm.js';
+import api_client from '../apiClient.js'
 
-const x = (name, props, ...children) => {
-  return React.createElement(name, props, ...children);
-};
+const {x} = SimplyReact(React.createElement);
 
-class Comment extends React.Component {
-  render() {
-    return(
-      x("div", { className: "comment"},
-        x("p", { className: "comment-header" }, this.props.author),
-        x("p", { className: "comment-body" }, this.props.body),
-        x("div", { className: "comment-footer" },
-          x("a", {
-              href: "#",
-              className: "comment-fooder-delete",
-              onClick: this._handleDelete.bind(this)
-            },
-            "Delete")
-        )
-      )
-    );
-  }
-
-  _handleDelete(event) {
-    event.preventDefault();
-    this.props.onDelete(this.props.comment);
-  }
-}
-
-class CommentForm extends React.Component {
-  render() {
-    return (
-      x("form", {
-          className: "comment-form",
-          onSubmit: this._handleSubmit.bind(this)
-        },
-        x("label", {}, "Join the discussion"),
-        x("div", {className: "comment-form-fields"},
-          x("p", {},
-            x("input", {
-              placeholder: "Name",
-              ref: (input) => this._author = input
-            })
-          ),
-          x("textarea", {
-            placeholder: "Comment",
-            ref: (textarea) => this._body = textarea
-          })
-        ),
-        x("div", {className: "comment-form-actions"},
-          x("button", {type: "submit"}, "Post Comment")
-        )
-      )
-    )
-  }
-
-  _handleSubmit(event) {
-    event.preventDefault();
-
-    let author = this._author;
-    let body = this._body;
-
-    this.props.addComment(author.value, body.value);
-  }
-}
+// interface Props {
+//   state
+// }
+//
+// interface State {
+//   comments: Array<Comment>;
+//   showComments: boolean;
+// }
 
 class CommentBox extends React.Component {
+
+  // private props: Props;
+  // private state: State;
+  // private _timer;
 
   constructor() {
     super();
@@ -80,7 +34,12 @@ class CommentBox extends React.Component {
   // -------------------------------------------------
   componentWillMount() {
     this._fetchComments(); // Fetch before component is rendered to avoid render loop
+
+    this.state = this.props.state;
+    //store.subscribe(this.handleStateChange.bind(this))
+    //this.actions = this.props.actions // TODO:
   }
+
   componentDidMount() {
     this._timer = setInterval(
       () => this._fetchComments(),
@@ -89,6 +48,13 @@ class CommentBox extends React.Component {
   componentWillUnmount() {
     clearInterval(this._timer)
   }
+
+
+  handleStateChange(newState) {
+    console.log("COMMENTBOX: handling state change: ", newState.comments)
+    this.setState({comments: newState.comments})
+  }
+
   //-------------------------------------------------
 
   render() {
@@ -137,6 +103,9 @@ class CommentBox extends React.Component {
     const comments = [...this.state.comments]; // Clone existing array
     const commentIndex = comments.indexOf(comment);
     comments.splice(commentIndex, 1); // Remove one
+
+    //store.dispatch(deleteCommentAction(comment))
+
     this.setState({ comments });
   }
 
@@ -166,6 +135,7 @@ class CommentBox extends React.Component {
       author: author,
       body: body
     };
+    //store.dispatch(postCommentAction(comment))
     api_client.call({
       method: "POST",
       url: "/api/comments",
@@ -176,4 +146,4 @@ class CommentBox extends React.Component {
     });
   }
 }
-export {CommentBox}
+export default CommentBox;

@@ -1,28 +1,26 @@
-// Updating state
-// this.setState({showComments: true })
+import CommentBox from './comment/CommentBox.js';
+import ContactsBox from './contact/ContactsBox.js';
+import {TodoApp} from './todo/todoComponents.js';
+import {SimplyReact, SimplyReactDOM} from '../simply_react.js';
 
-// Shorthand Function Syntax:
-//    (input) => { this._author = input }
-// is the same as:
-//    function(newComment) {
-//      this._author = input;
-//    }.bind(this)
+const {x} = SimplyReact(React.createElement);
+const {o} = SimplyReactDOM(ReactDOM)
 
-import {CommentBox} from './commentComponents.js';
-import ContactsBox from './contactsBox.js'
-import {TodoApp} from './todo/todoComponents.js'
-
-const x = (name, props, ...children) => {
-  return React.createElement(name, props, ...children);
-};
-
-var rootElement = x('div', {style: {
-  display: 'flex',
-    'justify-content': 'space-evenly',
-  }},
-  x(CommentBox, {}),
-  x(ContactsBox, {}),
-  x(TodoApp, {})
+o('app',
+  x('div', {
+      className: 'container',
+      style: {margin: '50px'}
+    },
+    x('div', {
+        style: {
+          display: 'flex',
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+        }
+      },
+      x(CommentBox, {}),
+      x(ContactsBox, {}),
+      x(TodoApp, {})
+    )
+  )
 );
-console.log(rootElement)
-ReactDOM.render(rootElement, document.getElementById('app'));

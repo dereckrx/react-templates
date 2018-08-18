@@ -1,6 +1,6 @@
 import {SimplyReact} from  "../../simply_react.js"
 
-const {creatorFor, div, ul, li, h1} = SimplyReact(React.createElement);
+const {creatorFor, div, ul, li, h1} = SimplyReact(React.createElement, ReactDOM);
 
 // ## Contaner Component
 class TodoApp extends React.Component {
