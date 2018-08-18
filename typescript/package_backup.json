@@ -1,0 +1,44 @@
+{
+  "repository": {},
+  "license": "MIT",
+  "scripts": {
+    "deploy": "webpack --mode production",
+    "start": "npm run watch",
+    "watch": "npx webpack --config webpack.config.js --mode development --watch-stdin",
+    "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' ava --verbose",
+    "test:coverage": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' nyc --reporter=text ava --verbose",
+    "coverage": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' nyc --reporter=text-lcov ava | coveralls"
+  },
+  "dependencies": {
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "lodash": "^4.17.10",
+    "semantic-ui-css": "^2.3.3",
+    "semantic-ui-react": "^0.82.1",
+    "styled-components": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/enzyme": "^3.1.11",
+    "@types/jest": "^23.3.1",
+    "@types/lodash": "^4.14.110",
+    "@types/node": "^10.3.6",
+    "@types/react": "^16.4.2",
+    "@types/react-dom": "^16.0.6",
+    "@types/react-test-renderer": "^16.0.1",
+    "@types/sinon": "^5.0.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "file-loader": "^1.1.11",
+    "jest": "^23.4.2",
+    "ts-jest": "^23.1.2",
+    "ts-loader": "^4.4.1",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^1.2.4"
+  }
+}
