@@ -1,11 +1,4 @@
-// Actions -------------------------------------------------
-const ADD_TODO = 'ADD_TODO'
-const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
-const SHOW_ALL = 'SHOW_ALL'
 
-function addTodo(text) {
-  return { type: ADD_TODO, text: text }
-}
 
 // Reducers -------------------------------------------------
 // Takes previous state and applies and action to return the next state
@@ -47,44 +40,6 @@ function reduceVisibilityFilter(state = SHOW_ALL, action) {
   }
 }
 
-// STORE -------------------------------------------------
-// - Holds, allows access, updates the state
-// - Registers listeners
-
-// Pass in a reducer, optionally: initial state as 2nd param
-// function createStore(reducer, initial_state={}) {
-//   const store = {
-//     state: initial_state,
-//     reducer: reducer,
-//     subscribers: [],
-//     getState: function() { return this.state }.bind(this),
-//     subscribe: function(callback) {
-//       console.log(this)
-//       this.subscribers = this.subscribers.concat([callback])
-//     }
-//     dispatch: function(action) {
-//       this.state = reducer(this.state, action)
-//       //subscribers.forEach( (sub) => sub() )
-//     }
-//   }
-//   return store
-// }
-
-function Store(reducer, initialState={}) {
-  this.state = initialState;
-  this.reducer = reducer;
-  this.subscribers = [];
-  this.getState = function() { return this.state }.bind(this)
-  this.subscribe = function(callback) {
-    console.log(this);
-    this.subscribers = this.subscribers.concat([callback])
-  };
-  this.dispatch = function(action) {
-    this.state = reducer(this.state, action);
-    this.subscribers.forEach( (sub) => sub() )
-  }
-}
-
 //-------------------------------------------------
 // Putting it all together
 //-------------------------------------------------
@@ -114,9 +69,7 @@ let unsubscribe = store.subscribe(() =>
   console.log(store.getState())
 );
 // Dispatch some actions
-store.dispatch(addTodo('Learn about actions'));
-store.dispatch(addTodo('Learn about reducers'));
-store.dispatch(addTodo('Learn about store'));
+
 //....
 
 // Stop listening to unsubscribe
