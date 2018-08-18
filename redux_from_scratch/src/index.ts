@@ -1,21 +1,21 @@
 import {Store} from './store';
 import {reducer} from './reducers';
-import {SimplyReact} from '../../simply_react';
+import {SimplyReact, SimplyReactDOM} from '../../simply_react';
 import {App} from './app';
-import * as ReactDOM from 'react-dom';
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-const {create} = SimplyReact(React.createElement);
-console.log('--> starting: ');
+const {x} = SimplyReact(React.createElement);
+const {o} = SimplyReactDOM(ReactDOM);
 
 const store = Store({
   reducer: reducer,
   state: {todos: []},
 });
+
 store.subscribe((state) => {
-  ReactDOM.render(
-    create(App, {state: state, dispatch: store.dispatch}),
-    document.getElementById("container"))
+  o('app',
+    x('div', {style: {display: 'flex', justifyContent: 'center'}},
+      x(App, {state: state, dispatch: store.dispatch})));
 });
-console.log('--> Setupdone: ');
 store.dispatch({});

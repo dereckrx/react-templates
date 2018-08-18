@@ -7,21 +7,42 @@ export interface State {
   users: Array<any> | null;
 }
 
+// STORE -------------------------------------------------
+// - Holds, allows access, updates the state
+// - Registers listeners
 const Store = function(props) {
 
   const reducer = props.reducer;
   let state = props.state;
   const getState = () => state;
-  const listeners = [];
+  const subscribers = [];
+  const log = props.log || console.log;
 
-  const dispatch = (action) => {
-    console.log('--> Dispatching: ' + action);
-    state = reducer(action, state);
-    listeners.forEach(listener => listener(state))
+  const init_from_api = () => {
+    //this.dispatch(getCommentsAaction())
   };
 
-  const subscribe = (listener) => {
-    listeners.push(listener)
+  const dispatch = (action) => {
+    // This is my "faked" middleware
+    // Provides extension point between a dispatched action, and the reducer.
+    // Logger "middleware"
+    log(`--> Dispatching: ${action}`);
+
+    // "Thunk" middleware to handle actions that are functions
+    if(typeof action === 'function'){
+      action(this);
+      return null
+    }
+
+    state = reducer(action, state);
+
+    log("((( Notifying subscribers ))) ");
+    subscribers.forEach(subscriber => subscriber(state))
+  };
+
+  const subscribe = (notify) => {
+    log("+ Adding subscriber")
+    subscribers.push(notify)
   };
 
   dispatch({});
@@ -48,8 +69,17 @@ const Store = function(props) {
     return toAsync((resolve, reject) => resolve(requester(responseHandler)));
   };
 
+  // const thunk = (store) => (nextDispatch) => (action) => {
+  //   if(typeof action === 'function') {
+  //     action(this)
+  //     return null
+  //   } else {
+  //     nextDispatch(action)
+  //   }
+  // };
+
   return {
-    listeners,
+    subscribers,
     subscribe,
     dispatch,
     thunk,

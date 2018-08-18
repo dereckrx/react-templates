@@ -1,5 +1,6 @@
 // Run with
 import {Store} from './store';
+import {addTodo} from './actions';
 
 describe('Store', () => {
 
@@ -12,19 +13,19 @@ describe('Store', () => {
           return state;
       }
     };
-    const store = Store({reducer});
+    const store = Store({reducer, log: () => null});
     return {
       store,
     }
   };
 
-  it('adds a listener', () => {
+  it('adds a subscriber', () => {
     const {store} = setup();
     store.subscribe(() => null);
-    expect(store.listeners.length).toEqual(1)
+    expect(store.subscribers.length).toEqual(1)
   });
 
-  it('dispatches to listeners', () => {
+  it('dispatches to subscriber', () => {
     const {store} = setup();
     let wasCalled = 'not called';
     store.subscribe((state) => {
@@ -88,4 +89,15 @@ describe('Store', () => {
       expect(wasCalled).toEqual('called');
     });
   });
+
+  it('dispatches add todo', () => {
+    const {store} = setup();
+    const todos = [];
+    store.subscribe((todo) => { todos.push(todo) });
+    store.dispatch(addTodo('Learn about actions'));
+    store.dispatch(addTodo('Learn about reducers'));
+    store.dispatch(addTodo('Learn about store'));
+    expect(todos.length).toEqual(3)
+  });
+
 });
