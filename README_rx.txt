@@ -10,3 +10,18 @@ TODO with abe
 
 Container: handles state
     - presentation: stateless
+
+
+## Javascript
+
+```
+// Updating state
+this.setState({showComments: true })
+
+// Shorthand Function Syntax:
+   (input) => { this._author = input }
+is the same as:
+   function(newComment) {
+     this._author = input;
+   }.bind(this)
+```
