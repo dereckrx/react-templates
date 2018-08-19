@@ -3,15 +3,15 @@ const Store = (props) => {
   const reducer = props.reducer;
   let state = props.state;
   const getState = () => state;
-  const listeners = [];
+  const subscribers = [];
 
   const dispatch = (action) => {
     state = reducer(action, state);
-    listeners.forEach(listener => listener(state))
+    subscribers.forEach(listener => listener(state));
   };
 
-  const subscribe = (listener) => {
-    listeners.push(listener)
+  const subscribe = (notify) => {
+    subscribers.push(notify)
   };
 
   dispatch({});
@@ -39,10 +39,10 @@ const Store = (props) => {
   };
 
   return {
-    listeners,
-    subscribe,
     dispatch,
+    subscribe,
     thunk,
+    getState,
   }
 };
 

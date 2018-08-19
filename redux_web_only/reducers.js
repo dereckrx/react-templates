@@ -1,12 +1,4 @@
-
-const initalState = {
-  num: 0,
-  todos: [],
-  data: "",
-  users:null
-};
-
-function reducer(action, state = initalState ) {
+function reducer(action, state ) {
   switch (action.type) {
     case "INC":
       return {

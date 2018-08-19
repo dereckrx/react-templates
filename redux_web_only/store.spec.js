@@ -13,26 +13,20 @@ const t = test('Store', () => {
           return state;
       }
     };
-    const store = Store({reducer});
+    const store = Store({reducer, state: {}});
     return {
       store,
     }
   };
 
-  it('adds a listener', () => {
-    const {store} = setup();
-    store.subscribe(() => null);
-    expectEqual(store.listeners.length, 1);
-  });
-
-  it('dispatches to listeners', () => {
+  it('adds a subscriber and notifies', () => {
     const {store} = setup();
     let wasCalled = 'not called';
     store.subscribe((state) => {
       wasCalled = state.wasCalled
     });
     store.dispatch({type: 'test_action'});
-    expectEqual(wasCalled, 'called with true')
+    expectEqual(wasCalled, 'called')
   });
 
   it('creates a thunk', () => {

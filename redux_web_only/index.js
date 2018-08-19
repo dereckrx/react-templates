@@ -6,14 +6,21 @@ import {App} from './app.js';
 const {x, div} = SimplyReact(React.createElement);
 const {o} = SimplyReactDOM(ReactDOM);
 
+const initalState = {
+  num: 0,
+  todos: [],
+  data: "",
+  users:null
+};
+
 const store = Store({
   reducer: reducer,
-  state: {todos: []},
+  state: initalState,
 });
 
 store.subscribe((state) => {
   o('app',
-    div({style: {fontFamily: 'monospace', display: 'flex', justifyContent: 'center', width: '100%', height: '100%'}},
+    div({className: 'app-content'},
       x(App, {state: state, dispatch: store.dispatch})
     )
   )
