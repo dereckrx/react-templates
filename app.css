@@ -7,10 +7,53 @@ align-items
 align-content
 */
 
-.flex {
-  display: flex;
+/* Arial */
+body {
+    font-family: Monospace;
+    /*font-family: Arial;*/
+    font-size: 2em;
 }
 
-.row {
-  flex-direction: 'row';
+.app-content {
+    width: auto;
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    margin-top: 3em;
+}
+
+.sidebar {
+    width: 454px;
+    padding: 1em;
+    border: solid 1px;
+}
+
+.detail-view {
+    width: 454px;
+    padding: 1em;
+    border: solid 1px;
+}
+
+.item {
+    margin-top: 1em;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+input[type="text"] {
+    font-size: 1em;
+    padding: 0.5em 1em;
+    box-sizing: border-box;
+}
+
+input[type="checkbox"],
+input[type="radio"]{
+    display: inline;
+    width: auto;
+    margin-right: 1em;
 }

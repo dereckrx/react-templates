@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <head>
   <title>ReactRx Title</title>
+  <link rel="stylesheet" href="app.css">
 </head>
 <body>
 
@@ -11,16 +12,18 @@
 
 <script type="module">
   import {SimplyReact, SimplyReactDOM} from './simply_react.js';
+  import {Store} from './redux_web_only/store.js';
 
   const {o} = SimplyReactDOM(ReactDOM);
   const {x, div, h1, h2, input} = SimplyReact(React.createElement);
 
   const Item = (props) => {
-    const handleRemove = () => store.removeItem(props);
+    const handleRemove = () => actions.removeItem(props);
+    const handleView = () => actions.viewItem(props)
     return (
-      div({style: {marginBottom: '16px'}},
+      div({className: 'item'},
         input({type: 'checkbox', onClick: handleRemove}),
-        props.name
+        x('label', {onClick: handleView}, props.name)
       )
     );
   };
@@ -28,16 +31,16 @@
   const ItemForm = (props) => {
     const handleKeyPress = (e) => {
       if (e.key === 'Enter') {
-        store.addItem({name: e.target.value});
+        actions.addItem({name: e.target.value});
+        e.target.value = '';
       }
     };
 
     return (
-      div({style: {}},
-        h2('New Item'),
+      div({className: 'item'},
         input({
-          type: 'text', placeholder: 'name', onKeyPress: handleKeyPress
-        }),
+          type: 'text', placeholder: 'new item', onKeyPress: handleKeyPress
+        })
       )
     );
   };
@@ -45,73 +48,75 @@
   const ItemList = (props) => {
     const itemComponents = props.items.map((item) => x(Item, {...item, key: item.id}));
     return (
-      div(
-        h1('Items'),
-        div({style: {display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}},
-          itemComponents
-        )
+      div({style: {display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}},
+        itemComponents
       )
     )
   };
 
   const Sidebar = (props) => {
     return (
-      x('div', {style: {display: 'flex', flexDirection: 'column'}},
-        x(ItemForm, {}),
-        x(ItemList, props)))
+      div({className: 'sidebar'},
+        div({className: 'app-box', style: {display: 'flex', flexDirection: 'column'}},
+          h2('Items'),
+          x(ItemForm, {}),
+          x(ItemList, props)
+        )
+      )
+    )
   };
 
   const MainView = (props) => {
     return (
-      div()
+      div({className: 'detail-view'},
+        h2('Item Detail'),
+        div({className: 'item'}, props.state.selectedItem.name)
+      )
     )
   };
 
   const reducer = (action, state) => {
-    const merge = (object, values) => {
-      return {...object, ...values}
-    };
-
     switch (action.type) {
       case 'ADD_ITEM':
-        return merge(state, {
-            items: [...state.items, action.props],
-            maxItemId: action.props.id
-          }
-        );
+        return {
+          ...state,
+          items: [...state.items, action.props],
+          maxItemId: action.props.id
+        };
       case 'REMOVE_ITEM':
         return {...state, items: state.items.filter((item) => item.id !== action.id)};
+      case 'VIEW_ITEM':
+        return {...state, selectedItem: action.item}
       default:
         return state;
     }
   };
 
-  const Store = ({reducer, initialState}) => {
-    let state = initialState;
-    const subscribers = [];
+  const Actions = ({reducer, initialState}) => {
+    const store = Store({reducer, state: initialState})
 
-    const dispatch = (action) => {
-      state = reducer(action, state);
-      subscribers.forEach((notify) => notify(state))
-      console.log('++> ', state)
-    };
-    const subscribe = (notify) => {
-      subscribers.push(notify)
+    const init = () => {
+      store.dispatch({});
     };
     const addItem = (props) => {
       const action = {type: 'ADD_ITEM', props};
-      action.props.id = state.maxItemId + 1;
-      dispatch(action);
+      action.props.id = store.getState().maxItemId + 1;
+      store.dispatch(action);
     };
     const removeItem = (props) => {
       const action = {type: 'REMOVE_ITEM', ...props};
-      dispatch(action);
+      store.dispatch(action);
+    };
+    const viewItem = (item) => {
+      const action = {type: 'VIEW_ITEM', item};
+      store.dispatch(action);
     };
     return {
-      dispatch,
-      subscribe,
+      subscribe: store.subscribe,
+      init,
       addItem,
-      removeItem
+      removeItem,
+      viewItem
     }
   };
 
@@ -120,22 +125,23 @@
     {id: 2, name: 'second'}
   ];
   const initialState = {
+    selectedItem: items[0],
     maxItemId: items.length,
     items: items
   };
-  const store = Store({reducer, initialState});
+  const actions = Actions({reducer, initialState});
 
-  store.subscribe((state) => {
+  actions.subscribe((state) => {
     o('app',
-      x('div', {style: {display: 'flex', justifyContent: 'center', width: '100%', height: '100%'}},
-        x('div', {style: {marginTop: '50px'}},
+      x('div', {className: 'app-content'},
+        x('div', {style: {display: 'flex', justifyContent: 'center'}},
           x(Sidebar, {items: state.items}),
-          x(MainView, {state})
+          x(MainView, {state}),
         )
       )
     );
   });
-  store.dispatch({})
+  actions.init();
 
 </script>
 </body>
