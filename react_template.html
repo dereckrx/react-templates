@@ -2,17 +2,16 @@
 <head>
   <title>ReactRx Title</title>
   <link rel="stylesheet" href="app.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react-dom.js"></script>
 </head>
 <body>
 
 <div id="app"/>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react-dom.js"></script>
-
-<script type="module">
+<script defer type="module">
   import {SimplyReact, SimplyReactDOM} from './simply_react.js';
-  import {Store} from './redux_web_only/store.js';
+  import {Store} from './reduxrx/store.js';
 
   const {o} = SimplyReactDOM(ReactDOM);
   const {x, div, h1, h2, input} = SimplyReact(React.createElement);

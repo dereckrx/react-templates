@@ -1,5 +1,5 @@
-import {Store} from './store.js';
-import {reducer} from './reducers.js';
+import {Store} from '../reduxrx/store.js';
+import {reducer} from '../reduxrx/reducers.js';
 import {SimplyReact, SimplyReactDOM} from '../simply_react.js';
 import {App} from './app.js';
 

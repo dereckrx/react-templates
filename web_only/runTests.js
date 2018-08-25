@@ -32,7 +32,7 @@ console.log = (...args) => {
 };
 print(MessageList, '...starting');
 
-import test from "./store.spec.js";
+import test from "../reduxrx/store.spec.js";
 
 try {
   test();

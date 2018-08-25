@@ -1,7 +1,7 @@
 // Run with in the browser by opening runTests.html
 
 import {Store} from './store.js';
-import {test, describe, it, async, itAsync, expectEqual} from './test_simply.js';
+import {test, describe, it, async, itAsync, expectEqual} from '../test_simply/test_simply.js';
 
 const t = test('Store', () => {
   const setup = () => {
