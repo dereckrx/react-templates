@@ -105,6 +105,59 @@
     )
   };
 
+  const RepTimer = (props) => {
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance(value);
+    utterThis.voice = synth.getVoices()[48];
+
+    let interval = null;
+    const repCount = props.state.count;
+    const createInterval = (countLength, cb) => {
+      return setInterval(() => cb(), countLength * 1000);
+    };
+
+    const speak = (value) => {
+
+      synth.speak(utterThis);
+    };
+
+    const stopButton = x('button', {onClick: (e) => {
+        clearInterval(interval);
+      }},
+      'Stop'
+    );
+
+    const buttons = [2,3,5].map((num) => {
+      return x('button', {
+          onClick: (e) => {
+            interval = createInterval(num, () => {
+              actions.incrementCount();
+            });
+          },
+          value: num,
+        },
+
+        `${num}`);
+    });
+
+    if(repCount === 1) {
+      speak('Go!');
+    }else if(repCount !== 0 && repCount % 5 === 0) {
+      speak(`${repCount}`);
+    }
+
+    return (
+      div({style: {width: "100px"}},
+        "Count: " + repCount,
+        stopButton,
+        div({},
+          ...buttons
+        )
+      )
+    )
+  };
+
+  // -------------------------------------------------
   const reducer = (action, state) => {
     switch (action.type) {
       case 'ADD_ITEM':
@@ -119,6 +172,8 @@
         return {...state, selectedItem: action.item};
       case 'UPDATE_INPUT':
         return {...state, inputValue: state.inputValue + action.value};
+      case 'INCREMENT_COUNT':
+        return {...state, count: state.count + 1 };
       default:
         return state;
     }
@@ -147,6 +202,10 @@
       const action = {type: 'UPDATE_INPUT', value};
       store.dispatch(action)
     };
+    const incrementCount = () => {
+      const action = {type: 'INCREMENT_COUNT'};
+      store.dispatch(action)
+    };
     return {
       subscribe: store.subscribe,
       init,
@@ -154,6 +213,7 @@
       removeItem,
       viewItem,
       updateInput,
+      incrementCount,
     }
   };
 
@@ -161,7 +221,7 @@
     {
       id: 1,
       name: 'Scapular Pushup',
-      imageUrl: 'https://redefiningstrength.com/wp-content/uploads/2014/08/scapular-push-ups-e1412187536670.jpg',
+      imageUrl: 'https://jscfitness.com/wp-content/uploads/2015/04/ktszs.gif',
       videoUrl: 'https://www.youtube.com/embed/VCPp1DUypo0'
     },
     {id: 2, name: 'second'}
@@ -171,6 +231,7 @@
     maxItemId: items.length,
     items: items,
     inputValue: 0,
+    count: 0,
   };
   const actions = Actions({reducer, initialState});
 
@@ -178,9 +239,12 @@
     o('app',
       x('div', {className: 'app-content'},
         x('div', {style: {display: 'flex', justifyContent: 'center'}},
+          x(RepTimer, {state})
+        ),
+        x('div', {style: {display: 'flex', justifyContent: 'center'}},
           x(Sidebar, {items: state.items}),
           x(MainView, {state}),
-          x(InputView, {state})
+          x(InputView, {state}),
         )
       )
     );
