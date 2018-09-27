@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<head>
+  <title>ReactRx Title</title>
+  <link rel="stylesheet" href="app.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react-dom.js"></script>
+</head>
+<body>
+
+<div id="app"/>
+
+<script defer type="module">
+  import {SimplyReact, SimplyReactDOM} from './simply_react.js';
+  import {Store} from './reduxrx/store.js';
+
+  const {o} = SimplyReactDOM(ReactDOM);
+  const {x, div, h1, h2, input} = SimplyReact(React.createElement);
+
+  const Item = (props) => {
+    const handleRemove = () => actions.removeItem(props);
+    const handleView = () => actions.viewItem(props);
+    return (
+      div({className: 'item'},
+        input({type: 'checkbox', onClick: handleRemove}),
+        x('label', {onClick: handleView}, props.count)
+      )
+    );
+  };
+
+  const ItemForm = (props) => {
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        actions.addItem({name: e.target.value});
+        e.target.value = '';
+      }
+    };
+
+    return (
+      div({className: 'item'},
+        input({
+          id: 'new-item-input',
+          type: 'text', placeholder: 'new item', onKeyPress: handleKeyPress
+        })
+      )
+    );
+  };
+
+  const ItemList = (props) => {
+    const items = props.state.items;
+    const itemComponents = items.map((item) => x(Item, {...item, key: item.id}));
+    return (
+      div({style: {display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}},
+        itemComponents
+      )
+    )
+  };
+
+  const RepTimer = (props) => {
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance('');
+    utterThis.voice = synth.getVoices()[48];
+
+    const repCount = props.state.count;
+    const createInterval = (countLength, cb) => {
+      return setInterval(() => cb(), countLength * 1000);
+    };
+
+    const speak = (value) => {
+      utterThis.text = value;
+      synth.speak(utterThis);
+    };
+
+    const stopButton = x('button', {onClick: (e) => {
+        actions.finishCount();
+      }},
+      'Done'
+    );
+
+    const buttons = [1,2,3,5].map((num) => {
+      return x('button', {
+          onClick: (e) => {
+            speak('Ready?');
+            actions.setCountInterval(num, createInterval(num, actions.incrementCount));
+          },
+          value: num,
+        },
+
+        `${num}`);
+    });
+
+    if(repCount === 0) {
+      speak('Go!');
+    }else if(repCount !== 0 && repCount % 5 === 0) {
+      speak(`${repCount}`);
+    } else if(repCount > 0 && props.state.countNum > 1){
+      speak('uh')
+    }
+
+    return (
+      div({className: 'sidebar'},
+        div({className: 'app-box', style: {display: 'flex', flexDirection: 'column'}},
+          h2(`Count: ${repCount}`),
+          stopButton,
+          div({},
+            ...buttons
+          ),
+          x(ItemForm, {}),
+          x(ItemList, props)
+        )
+      )
+    )
+  };
+
+  // -------------------------------------------------
+  const reducer = (action, state) => {
+    switch (action.type) {
+      case 'ADD_ITEM':
+        const item = action.props;
+        item.count = state.count;
+        if(state.count > 5) {
+          item.count = state.count - (state.count % 5);
+        }
+        console.log('add', item);
+        return {
+          ...state,
+          items: [...state.items, item],
+          maxItemId: action.props.id
+        };
+      case 'REMOVE_ITEM':
+        return {...state, items: state.items.filter((item) => item.id !== action.id)};
+      case 'UPDATE_INPUT':
+        return {...state, inputValue: state.inputValue + action.value};
+      case 'INCREMENT_COUNT':
+        return {...state, count: state.count + 1 };
+      case 'FINISH_COUNT':
+        clearInterval(state.countInterval);
+        return {...state, count: -2, countInterval: null };
+      case 'SET_COUNT_INTERVAL':
+        return {...state, countNum: action.num, countInterval: action.interval };
+      default:
+        console.log('Unknown action ' + action);
+        return state;
+    }
+  };
+
+  const Actions = ({reducer, initialState}) => {
+    const store = Store({reducer, state: initialState});
+
+    const init = () => {
+      store.dispatch({});
+    };
+    const addItem = (props) => {
+      const action = {type: 'ADD_ITEM', props};
+      action.props.id = store.getState().maxItemId + 1;
+      store.dispatch(action);
+    };
+    const removeItem = (props) => {
+      const action = {type: 'REMOVE_ITEM', ...props};
+      store.dispatch(action);
+    };
+    const viewItem = (item) => {
+      const action = {type: 'VIEW_ITEM', item};
+      store.dispatch(action);
+    };
+    const updateInput = (value) => {
+      const action = {type: 'UPDATE_INPUT', value};
+      store.dispatch(action)
+    };
+    const incrementCount = () => {
+      const action = {type: 'INCREMENT_COUNT'};
+      store.dispatch(action)
+    };
+    const finishCount = () => {
+      const action = {type: 'FINISH_COUNT'};
+      addItem({});
+      store.dispatch(action);
+    };
+    const setCountInterval = (num, interval) => {
+      store.dispatch({type: 'SET_COUNT_INTERVAL', num, interval});
+    };
+    return {
+      subscribe: store.subscribe,
+      init,
+      addItem,
+      removeItem,
+      viewItem,
+      updateInput,
+      incrementCount,
+      finishCount,
+      setCountInterval,
+    }
+  };
+
+  const items = [
+    {id: 1, count: 0}
+  ];
+  const initialState = {
+    selectedItem: items[0],
+    maxItemId: items.length,
+    items: items,
+    inputValue: 0,
+    count: -2,
+    countNum: 0,
+    countInterval: null,
+  };
+  const actions = Actions({reducer, initialState});
+
+  actions.subscribe((state) => {
+    o('app',
+      x('div', {className: 'app-content'},
+        x('div', {style: {display: 'flex', justifyContent: 'center'}},
+          x(RepTimer, {state})
+        ),
+      )
+    );
+  });
+  actions.init();
+
+</script>
+</body>
+</html>
