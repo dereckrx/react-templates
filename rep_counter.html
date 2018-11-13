@@ -16,6 +16,9 @@
   const {o} = SimplyReactDOM(ReactDOM);
   const {x, div, h1, h2, input} = SimplyReact(React.createElement);
 
+  const EX_COUNT = 20;
+  const HALFWAY_COUNT = EX_COUNT/2;
+
   const Item = (props) => {
     const handleRemove = () => actions.removeItem(props);
     const handleView = () => actions.viewItem(props);
@@ -56,16 +59,18 @@
   };
 
   const RepTimer = (props) => {
+    const {exercises, currExIndex} = props.state;
     const synth = window.speechSynthesis;
     const utterThis = new SpeechSynthesisUtterance('');
     utterThis.voice = synth.getVoices()[48];
 
     const repCount = props.state.count;
     const createInterval = (countLength, cb) => {
+      actions.finishCount();
       return setInterval(() => cb(), countLength * 1000);
     };
 
-    const speak = (value) => {
+    const speak = async (value) => {
       utterThis.text = value;
       synth.speak(utterThis);
     };
@@ -88,9 +93,17 @@
         `${num}`);
     });
 
-    if(repCount === 0) {
+    if(currExIndex >= 0 && currExIndex < exercises.length-1) {
+      if(repCount === 0) {
+        speak(exercises[currExIndex]);
+      } else if(repCount === HALFWAY_COUNT) {
+        speak('Halfway')
+      } else if(repCount !== 0 && repCount % 5 === 0) {
+        speak(`${repCount}`);
+      }
+    } else if(repCount === 0 && currExIndex === -1) {
       speak('Go!');
-    }else if(repCount !== 0 && repCount % 5 === 0) {
+    } else if(repCount !== 0 && repCount % 5 === 0) {
       speak(`${repCount}`);
     } else if(repCount > 0 && props.state.countNum > 1){
       speak('uh')
@@ -104,6 +117,17 @@
           div({},
             ...buttons
           ),
+          div({},
+            x('button', {
+              onClick: (e) => {
+                const num = 1;
+                speak('Ready?');
+                actions.setCountInterval(num, createInterval(num, actions.nextExercise));
+              },
+            },
+            `${exercises[currExIndex]}`
+            )
+          ),
           x(ItemForm, {}),
           x(ItemList, props)
         )
@@ -113,6 +137,7 @@
 
   // -------------------------------------------------
   const reducer = (action, state) => {
+    console.log('REDUCER: ', action, state);
     switch (action.type) {
       case 'ADD_ITEM':
         const item = action.props;
@@ -120,7 +145,6 @@
         if(state.count > 5) {
           item.count = state.count - (state.count % 5);
         }
-        console.log('add', item);
         return {
           ...state,
           items: [...state.items, item],
@@ -137,6 +161,11 @@
         return {...state, count: -2, countInterval: null };
       case 'SET_COUNT_INTERVAL':
         return {...state, countNum: action.num, countInterval: action.interval };
+      case 'NEXT_EXERCISE':
+        return {...state,
+          currExIndex: state.currExIndex + 1,
+          count: 0,
+        };
       default:
         console.log('Unknown action ' + action);
         return state;
@@ -178,6 +207,20 @@
     const setCountInterval = (num, interval) => {
       store.dispatch({type: 'SET_COUNT_INTERVAL', num, interval});
     };
+    const nextExercise = () => {
+      const state = store.getState();
+      let action;
+      if(state.currExIndex === -1) {
+        action = {type: 'NEXT_EXERCISE'};
+      } else if(state.count < EX_COUNT) {
+        action = {type: 'INCREMENT_COUNT'};
+      } else if(state.currExIndex < state.exercises.length-1){
+        action = {type: 'NEXT_EXERCISE'};
+      } else {
+        action = {type: 'FINISH_COUNT'};
+      }
+      store.dispatch(action)
+    };
     return {
       subscribe: store.subscribe,
       init,
@@ -188,6 +231,7 @@
       incrementCount,
       finishCount,
       setCountInterval,
+      nextExercise,
     }
   };
 
@@ -202,6 +246,18 @@
     count: -2,
     countNum: 0,
     countInterval: null,
+    currExIndex: -1,
+    exercises: [
+      "Wrist Circles",
+      "Hip Bridge",
+      "Forward Lunges",
+      "Mountain climbers",
+      "Scorpion",
+      "Fog stretch with lateral leg",
+      "X-body arms swings",
+      "Reverse Plank",
+      "Frankenstein March",
+    ]
   };
   const actions = Actions({reducer, initialState});
 
