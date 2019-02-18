@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import {Segment, Menu, Header} from 'semantic-ui-react';
 
 const Container = styled.div`
-
+  width: 200px;
+  height: 240px;
 `;
 
 interface AppComponentState {
@@ -28,7 +29,7 @@ class App extends React.Component<{}, AppComponentState> {
           />
         </Menu>
         <Segment>
-          <Header size="medium">The Way we do it...</Header>
+          <Header size="medium">The Way we do it MORE!!!...</Header>
         </Segment>
       </Container>
     );
