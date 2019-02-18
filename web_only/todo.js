@@ -1,6 +1,18 @@
 import { SimplyReact } from '../simply_react.js'
 
-const {div, ul, li, button, input} = SimplyReact(React.createElement);
+const {div, ul, li, button, input, x} = SimplyReact(React.createElement);
+
+// Alternative to styled-components
+const addButtonStyle = {
+  fontSize: '24px',
+};
+
+const style = {
+  fontSize: '24px',
+};
+
+const TodoInput = (props) => input({...props, style}, props.children);
+
 
 const Todo = (props) => {
 
@@ -30,13 +42,17 @@ const Todo = (props) => {
 
   return (
     div({},
-      input({
-        placeholder: "Some Text",
+      x(TodoInput, {
+        placeholder: "What todo?",
         onChange: (e) => {
           state.value = e.target.value
         }
       }),
-      button({onClick: onAddHandler}, 'Add Todo'),
+      button({
+        style: addButtonStyle,
+        onClick: onAddHandler
+      },
+        'Add'),
       ul({}, ...todos),
     )
   )

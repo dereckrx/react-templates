@@ -5,13 +5,12 @@ const {creatorFor, div, h1, a} = SimplyReact(React.createElement);
 
 const App = (props) => {
   const todo = creatorFor(Todo);
+  const totalTodos = props.state.todos.length;
   return (
     div(
-      h1('Counter'),
-      h1(`${props.state.todos.length}`),
+      h1(`Todos: ${totalTodos}`),
+      todo(props),
       a({href: 'runTests.html'}, 'Tests!'),
-      h1('Todos'),
-      todo(props)
     )
   )
 };
