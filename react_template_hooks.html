@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<head>
+  <title>ReactRx Title</title>
+  <link rel="stylesheet" href="app.css">
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+</head>
+<body>
+
+<div id="app"/>
+
+<script defer type="module">
+  const useState = React.useState;
+  const x = React.createElement;
+
+  const Item = (props) => {
+    const {item, actions} = props;
+    const handleRemove = () => actions.removeItem(item);
+    const handleView = () => actions.viewItem(item)
+    return (
+      x('div', {className: 'item'},
+        x('input', {type: 'checkbox', onClick: handleRemove}),
+        x('label', {onClick: handleView}, item.name)
+      )
+    );
+  };
+
+  const ItemForm = (props) => {
+    const {state, actions} = props;
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        actions.addItem({name: e.target.value});
+        e.target.value = '';
+      }
+    };
+
+    return (
+      x('div', {className: 'item'},
+        x('input', {
+          id: 'new-item-input',
+          type: 'text', placeholder: 'new item', onKeyPress: handleKeyPress
+        })
+      )
+    );
+  };
+
+  const ItemList = (props) => {
+    const {state, actions} = props;
+    const itemComponents = state.items.map((item) => 
+      x(Item, {...props, item, key: item.id}));
+    return (
+      x('div', {style: {display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}},
+        itemComponents
+      )
+    )
+  };
+
+  const Sidebar = (props) => {
+    return (
+      x('div', {className: 'sidebar'},
+        x('div', 
+          {className: 'app-box', style: {display: 'flex', flexDirection: 'column'}},
+          x('h2', {}, 'Items'),
+          x(ItemForm, props),
+          x(ItemList, props)
+        )
+      )
+    )
+  };
+
+  const MainView = (props) => {
+    return (
+      x('div', {className: 'detail-view'},
+        x('h2', {}, 'Item Detail'),
+        x('div', {className: 'item'}, props.state.selectedItem.name)
+      )
+    )
+  };
+
+  const items = [
+    {id: 1, name: 'first'},
+    {id: 2, name: 'second'}
+  ];
+  const initialState = {
+    selectedItem: items[0],
+    maxItemId: items.length,
+    items: items
+  };
+
+  const Actions = (state, setState) => {
+    const addItem = (props) => {
+      props.id = state.maxItemId + 1;
+      setState({
+          ...state,
+          items: [...state.items, props],
+          maxItemId: props.id
+        });
+    };
+    const removeItem = (props) => {
+      return setState({
+        ...state, 
+        items: state.items.filter((item) => item.id !== props.id)
+      });
+    };
+    const viewItem = (item) => {
+      return setState({...state, selectedItem: item});
+    };
+    return {
+      addItem,
+      removeItem,
+      viewItem
+    }
+  }
+
+  const AppStore = (props) => {
+    const [state, setState] = useState(initialState);
+    const actions = props.Actions(state, setState);
+    return (x(AppContainer, {state, actions}));
+  }
+
+  const AppContainer = (props) => {
+    const state = props.state;
+    return (
+      x('div', {className: 'app-content'},
+        x('div', {style: {display: 'flex', justifyContent: 'center'}},
+          x(Sidebar, props),
+          x(MainView, props),
+        )
+      )
+    );
+  }
+
+ReactDOM.render(
+  x(AppStore, {Actions}), 
+  document.getElementById('app'));
+
+</script>
+</body>
+</html>

@@ -4,25 +4,25 @@
   <link rel="stylesheet" href="app.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react-dom.js"></script>
+  <script crossorigin src="https://cdn.jsdelivr.net/gh/dereckrx/simple-react@latest/index.js"></script>
 </head>
 <body>
 
 <div id="app"/>
 
 <script defer type="module">
-  import {SimplyReact, SimplyReactDOM} from './simply_react.js';
   import {Store} from './reduxrx/store.js';
 
-  const {o} = SimplyReactDOM(ReactDOM);
-  const {x, div, h1, h2, input} = SimplyReact(React.createElement);
+  const render = (id, component) => ReactDOM.render(component, document.getElementById(id));
+  const {div, label, input, h2} = simpleReact(React.createElement);
 
   const Item = (props) => {
     const handleRemove = () => actions.removeItem(props);
-    const handleView = () => actions.viewItem(props)
+    const handleView = () => actions.viewItem(props);
     return (
-      div({className: 'item'},
+      div({key: props.id, className: 'item'},
         input({type: 'checkbox', onClick: handleRemove}),
-        x('label', {onClick: handleView}, props.name)
+        label({onClick: handleView}, props.name)
       )
     );
   };
@@ -46,7 +46,7 @@
   };
 
   const ItemList = (props) => {
-    const itemComponents = props.items.map((item) => x(Item, {...item, key: item.id}));
+    const itemComponents = props.items.map((item) => Item({...item}));
     return (
       div({style: {display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}},
         itemComponents
@@ -59,8 +59,8 @@
       div({className: 'sidebar'},
         div({className: 'app-box', style: {display: 'flex', flexDirection: 'column'}},
           h2('Items'),
-          x(ItemForm, {}),
-          x(ItemList, props)
+          ItemForm(),
+          ItemList(props)
         )
       )
     )
@@ -132,11 +132,11 @@
   const actions = Actions({reducer, initialState});
 
   actions.subscribe((state) => {
-    o('app',
-      x('div', {className: 'app-content'},
-        x('div', {style: {display: 'flex', justifyContent: 'center'}},
-          x(Sidebar, {items: state.items}),
-          x(MainView, {state}),
+    render('app',
+      div({className: 'app-content'},
+        div({style: {display: 'flex', justifyContent: 'center'}},
+          Sidebar({items: state.items}),
+          MainView({state}),
         )
       )
     );

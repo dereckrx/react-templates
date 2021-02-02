@@ -1,10 +1,7 @@
-import {Store} from '../reduxrx/store.js';
-import {reducer} from '../reduxrx/reducers.js';
-import {SimplyReact, SimplyReactDOM} from '../simply_react.js';
 import {App} from './app.js';
 
-const {x, div} = SimplyReact(React.createElement);
-const {o} = SimplyReactDOM(ReactDOM);
+const x = React.createElement;
+const o = ReactDOM;
 
 const initalState = {
   num: 0,
@@ -20,10 +17,12 @@ const store = Store({
 
 store.subscribe((state) => {
   o('app',
-    div({className: 'app-content'},
+    x('div', {className: 'app-content'},
       x(App, {state: state, dispatch: store.dispatch})
     )
   )
 });
 
 store.dispatch({});
+
+export default store;

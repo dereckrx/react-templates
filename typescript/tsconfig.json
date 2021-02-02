@@ -10,12 +10,15 @@
     "moduleResolution": "node",
     "rootDir": ".",
     "forceConsistentCasingInFileNames": true,
+
+    "strict": true, // see: tsc --init
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": false,                /* Report errors on unused locals. */
+    "noUnusedParameters": false            /* Report errors on unused parameters. */
   },
   "exclude": [
     "node_modules",

@@ -4,17 +4,16 @@
   <link rel="stylesheet" href="app.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.0/react-dom.js"></script>
+  <script crossorigin src="https://cdn.jsdelivr.net/gh/dereckrx/simple-react@latest/index.js"></script>
 </head>
 <body>
 
 <div id="app"/>
 
 <script defer type="module">
-  import {SimplyReact, SimplyReactDOM} from './simply_react.js';
   import {Store} from './reduxrx/store.js';
 
-  const {o} = SimplyReactDOM(ReactDOM);
-  const {x, div, h1, h2, input} = SimplyReact(React.createElement);
+  const {div, h2, input, button, label} = simpleReact(React.createElement);
 
   const EX_COUNT = 20;
   const HALFWAY_COUNT = EX_COUNT/2;
@@ -23,9 +22,9 @@
     const handleRemove = () => actions.removeItem(props);
     const handleView = () => actions.viewItem(props);
     return (
-      div({className: 'item'},
+      div({key: props.id, className: 'item'},
         input({type: 'checkbox', onClick: handleRemove}),
-        x('label', {onClick: handleView}, props.count)
+        label({onClick: handleView}, props.count)
       )
     );
   };
@@ -50,7 +49,7 @@
 
   const ItemList = (props) => {
     const items = props.state.items;
-    const itemComponents = items.map((item) => x(Item, {...item, key: item.id}));
+    const itemComponents = items.map((item) => Item({...item}));
     return (
       div({style: {display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}},
         itemComponents
@@ -75,14 +74,14 @@
       synth.speak(utterThis);
     };
 
-    const stopButton = x('button', {onClick: (e) => {
+    const stopButton = button({onClick: (e) => {
         actions.finishCount();
       }},
       'Done'
     );
 
     const buttons = [1,2,3,5].map((num) => {
-      return x('button', {
+      return button({
           onClick: (e) => {
             speak('Ready?');
             actions.setCountInterval(num, createInterval(num, actions.incrementCount));
@@ -114,11 +113,11 @@
         div({className: 'app-box', style: {display: 'flex', flexDirection: 'column'}},
           h2(`Count: ${repCount}`),
           stopButton,
-          div({},
+          div(
             ...buttons
           ),
-          div({},
-            x('button', {
+          div(
+            button({
               onClick: (e) => {
                 const num = 1;
                 speak('Ready?');
@@ -128,8 +127,8 @@
             `${exercises[currExIndex]}`
             )
           ),
-          x(ItemForm, {}),
-          x(ItemList, props)
+          ItemForm(),
+          ItemList(props)
         )
       )
     )
@@ -262,12 +261,13 @@
   const actions = Actions({reducer, initialState});
 
   actions.subscribe((state) => {
-    o('app',
-      x('div', {className: 'app-content'},
-        x('div', {style: {display: 'flex', justifyContent: 'center'}},
-          x(RepTimer, {state})
+    ReactDOM.render(
+      div({className: 'app-content'},
+        div({style: {display: 'flex', justifyContent: 'center'}},
+          RepTimer({state})
         ),
-      )
+      ),
+      document.getElementById('app'),
     );
   });
   actions.init();
