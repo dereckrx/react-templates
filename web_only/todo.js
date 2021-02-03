@@ -1,61 +1,22 @@
-import { SimplyReact } from '../simply_react.js'
+export function Todo(state, dispatch) {
+  return {
+    ...state,
+    toggleFinished: () => dispatch({
+      type: 'FINISH_TODO',
+    }),
+  }
+}
 
-const {div, ul, li, button, input, x} = SimplyReact(React.createElement);
-
-// Alternative to styled-components
-const addButtonStyle = {
-  fontSize: '24px',
-};
-
-const style = {
-  fontSize: '24px',
-};
-
-const TodoInput = (props) => input({...props, style}, props.children);
-
-
-const Todo = (props) => {
-
-  let state = {value: ''};
-  const dispatch = props.dispatch;
-
-  const onAddHandler = () => {
-    if (state.value) {
-      dispatch({
-        type: 'ADD_TODO',
-        text: state.value
-      });
+export const reducers = {
+  // Doesn't work, because it's editing store state and not
+  // selected todo state
+  'FINISH_TODO': (s, _) => {
+    console.log(s.isFinished);
+    return {
+      isFinished: !s.isFinished,
     }
-    state.value = '';
-  };
-
-  const onDeleteHandler = (todo) => {
-    dispatch({
-      type: 'DELETE_TODO',
-      text: todo
-    });
-  };
-
-  const todos = props.state.todos.map((t) => {
-    return li({onClick: () => onDeleteHandler(t)}, t);
-  });
-
-  return (
-    div({},
-      x(TodoInput, {
-        placeholder: "What todo?",
-        onChange: (e) => {
-          state.value = e.target.value
-        }
-      }),
-      button({
-        style: addButtonStyle,
-        onClick: onAddHandler
-      },
-        'Add'),
-      ul({}, ...todos),
-    )
-  )
+  },
 };
 
-export {Todo};
+
+

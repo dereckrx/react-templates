@@ -1,11 +1,11 @@
-import {SimplyReact, SimplyReactDOM} from '../simply_react.js';
 
-const {x, div, h1} = SimplyReact(React.createElement, ReactDOM);
-const {o} = SimplyReactDOM(ReactDOM);
+const {div, h1, creatorFor} = simpleReact(React.createElement, ReactDOM);
+const pre = creatorFor('pre');
+const o = (id, component) => ReactDOM.render(component, document.getElementById(id));
 
 const MessageList = ({messages}) => {
   return (
-    x('pre', {id: 'messageList', style: {border: 'solid 1px', padding: '8px'}},
+    pre({id: 'messageList', style: {border: 'solid 1px', padding: '8px'}},
       ...messages.map(m => div(m))
     )
   )
@@ -18,7 +18,7 @@ const print = (component, ...message) => {
   o('app',
     div(
       h1('Tests!'),
-      x(component, {messages: state.messages})
+      component({messages: state.messages})
     )
   );
 };
@@ -30,6 +30,7 @@ console.log = (...args) => {
   print(MessageList, ...args);
   superLog(...args)
 };
+
 print(MessageList, '...starting');
 
 import test from "../reduxrx/store.spec.js";
